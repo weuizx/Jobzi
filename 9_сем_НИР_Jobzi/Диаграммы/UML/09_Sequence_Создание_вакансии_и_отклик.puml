@@ -43,10 +43,14 @@ Handler -> Service: handleVacancyTitleInput(userId, "Разнорабочий")
 activate Service
 
 Service -> StateManager: setContextValue(userId, "title", "Разнорабочий")
+activate StateManager
 StateManager --> Service: OK
+deactivate StateManager
 
 Service -> StateManager: setState(userId, VACANCY_CREATE_DESCRIPTION)
+activate StateManager
 StateManager --> Service: OK
+deactivate StateManager
 
 Service --> Handler: "Введите описание"
 deactivate Service
@@ -65,9 +69,24 @@ Handler -> Service: handleVacancyPublish(userId)
 activate Service
 
 Service -> StateManager: getContextValue(userId, "title")
+activate StateManager
+StateManager --> Service: "Разнорабочий"
+deactivate StateManager
+
 Service -> StateManager: getContextValue(userId, "description")
+activate StateManager
+StateManager --> Service: "Помощь на стройке..."
+deactivate StateManager
+
 Service -> StateManager: getContextValue(userId, "location")
+activate StateManager
+StateManager --> Service: "Москва"
+deactivate StateManager
+
 Service -> StateManager: getContextValue(userId, "salary")
+activate StateManager
+StateManager --> Service: "50000-70000"
+deactivate StateManager
 
 Service -> VacancyDB: createVacancy(businessId, title, description,\nlocation, salary, status=ACTIVE)
 activate VacancyDB
@@ -89,6 +108,9 @@ VacancyDB --> Service: Vacancy(id=1, code="ABC123")
 deactivate VacancyDB
 
 Service -> StateManager: setState(userId,\nVACANCY_CREATE_QUESTIONNAIRE_CHOICE)
+activate StateManager
+StateManager --> Service: OK
+deactivate StateManager
 
 Service --> Handler: "Вакансия создана!\nКод: ABC123\nВыберите тип анкеты"
 deactivate Service
@@ -117,6 +139,9 @@ QuestionDB --> Service: 4 questions created
 deactivate QuestionDB
 
 Service -> StateManager: clearState(userId)
+activate StateManager
+StateManager --> Service: OK
+deactivate StateManager
 
 Service --> Handler: "Анкета создана!\nВакансия опубликована"
 deactivate Service
@@ -184,7 +209,14 @@ DB --> QuestionDB: [q1, q2, q3, q4]
 deactivate QuestionDB
 
 AppService -> StateManager: setState(userId,\nAPPLICANT_ANSWERING_QUESTION)
+activate StateManager
+StateManager --> AppService: OK
+deactivate StateManager
+
 AppService -> StateManager: setContextValue(userId,\n"currentQuestionIndex", 0)
+activate StateManager
+StateManager --> AppService: OK
+deactivate StateManager
 
 AppService --> AppHandler: "Вопрос 1/4:\nКак вас зовут?"
 deactivate AppService
