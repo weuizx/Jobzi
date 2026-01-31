@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- Initial schema -->
+    <include file="db/changelog/changes/001-create-businesses-table.xml"/>
+    <include file="db/changelog/changes/002-create-users-table.xml"/>
+    <include file="db/changelog/changes/003-create-business-users-table.xml"/>
+    <include file="db/changelog/changes/004-create-vacancies-table.xml"/>
+    <include file="db/changelog/changes/005-create-questions-table.xml"/>
+    <include file="db/changelog/changes/006-create-applications-table.xml"/>
+    <include file="db/changelog/changes/007-create-answers-table.xml"/>
+    <include file="db/changelog/changes/008-add-user-roles.xml"/>
+    <include file="db/changelog/changes/009-change-user-role-to-varchar.xml"/>
+    <include file="db/changelog/changes/010-change-all-enums-to-varchar.xml"/>
+    <include file="db/changelog/changes/011-add-question-context-to-answers.xml"/>
+    <include file="db/changelog/changes/012-create-broadcast-channels-table.xml"/>
+    <include file="db/changelog/changes/013-create-broadcast-campaigns-table.xml"/>
+    <include file="db/changelog/changes/014-add-broadcast-schedule-fields.xml"/>
+
+</databaseChangeLog>

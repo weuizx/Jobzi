@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  id="Definitions_2"
+                  targetNamespace="http://bpmn.io/schema/bpmn">
+
+  <bpmn:process id="Process_TO_BE" name="Подбор персонала TO-BE (Через Jobzi)" isExecutable="false">
+
+    <bpmn:startEvent id="StartEvent_2" name="Потребность в персонале">
+      <bpmn:outgoing>Flow_21</bpmn:outgoing>
+    </bpmn:startEvent>
+
+    <bpmn:task id="Task_OpenBot" name="Открыть Jobzi бота">
+      <bpmn:incoming>Flow_21</bpmn:incoming>
+      <bpmn:outgoing>Flow_22</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_CreateVacancy" name="Создать вакансию (2-3 мин, 5 шагов)">
+      <bpmn:incoming>Flow_22</bpmn:incoming>
+      <bpmn:outgoing>Flow_23</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_SetupQuestionnaire" name="Настроить анкету (стандартную или кастомную)">
+      <bpmn:incoming>Flow_23</bpmn:incoming>
+      <bpmn:outgoing>Flow_24</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_AutoBroadcast" name="Автоматическая рассылка в выбранные каналы">
+      <bpmn:incoming>Flow_24</bpmn:incoming>
+      <bpmn:outgoing>Flow_25</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_AutoCollectResponses" name="Автоматический сбор откликов с анкетами">
+      <bpmn:incoming>Flow_25</bpmn:incoming>
+      <bpmn:outgoing>Flow_26</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_GetNotification" name="Получить уведомление о новых откликах">
+      <bpmn:incoming>Flow_26</bpmn:incoming>
+      <bpmn:outgoing>Flow_27</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_ViewStructuredData" name="Просмотр структурированных откликов">
+      <bpmn:incoming>Flow_27</bpmn:incoming>
+      <bpmn:outgoing>Flow_28</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:exclusiveGateway id="Gateway_SelectCandidate2" name="Кандидат подходит?">
+      <bpmn:incoming>Flow_28</bpmn:incoming>
+      <bpmn:outgoing>Flow_29_Yes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_29_No</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:task id="Task_ChangeStatus" name="Изменить статус (CONTACTED)">
+      <bpmn:incoming>Flow_29_Yes</bpmn:incoming>
+      <bpmn:outgoing>Flow_30</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_RejectStatus" name="Изменить статус (REJECTED)">
+      <bpmn:incoming>Flow_29_No</bpmn:incoming>
+      <bpmn:outgoing>Flow_31</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:exclusiveGateway id="Gateway_Merge2" name="">
+      <bpmn:incoming>Flow_30</bpmn:incoming>
+      <bpmn:incoming>Flow_31</bpmn:incoming>
+      <bpmn:outgoing>Flow_32</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:task id="Task_AddNotes" name="Добавить заметки о кандидате">
+      <bpmn:incoming>Flow_32</bpmn:incoming>
+      <bpmn:outgoing>Flow_33</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:exclusiveGateway id="Gateway_MoreCandidates2" name="Еще кандидаты?">
+      <bpmn:incoming>Flow_33</bpmn:incoming>
+      <bpmn:outgoing>Flow_34_Yes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_34_No</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:task id="Task_ExportExcel" name="Экспортировать в Excel (опционально)">
+      <bpmn:incoming>Flow_34_No</bpmn:incoming>
+      <bpmn:outgoing>Flow_35</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:endEvent id="EndEvent_2" name="Набор завершен (10-15 минут потрачено)">
+      <bpmn:incoming>Flow_35</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:sequenceFlow id="Flow_21" sourceRef="StartEvent_2" targetRef="Task_OpenBot"/>
+    <bpmn:sequenceFlow id="Flow_22" sourceRef="Task_OpenBot" targetRef="Task_CreateVacancy"/>
+    <bpmn:sequenceFlow id="Flow_23" sourceRef="Task_CreateVacancy" targetRef="Task_SetupQuestionnaire"/>
+    <bpmn:sequenceFlow id="Flow_24" sourceRef="Task_SetupQuestionnaire" targetRef="Task_AutoBroadcast"/>
+    <bpmn:sequenceFlow id="Flow_25" sourceRef="Task_AutoBroadcast" targetRef="Task_AutoCollectResponses"/>
+    <bpmn:sequenceFlow id="Flow_26" sourceRef="Task_AutoCollectResponses" targetRef="Task_GetNotification"/>
+    <bpmn:sequenceFlow id="Flow_27" sourceRef="Task_GetNotification" targetRef="Task_ViewStructuredData"/>
+    <bpmn:sequenceFlow id="Flow_28" sourceRef="Task_ViewStructuredData" targetRef="Gateway_SelectCandidate2"/>
+    <bpmn:sequenceFlow id="Flow_29_Yes" name="Да" sourceRef="Gateway_SelectCandidate2" targetRef="Task_ChangeStatus"/>
+    <bpmn:sequenceFlow id="Flow_29_No" name="Нет" sourceRef="Gateway_SelectCandidate2" targetRef="Task_RejectStatus"/>
+    <bpmn:sequenceFlow id="Flow_30" sourceRef="Task_ChangeStatus" targetRef="Gateway_Merge2"/>
+    <bpmn:sequenceFlow id="Flow_31" sourceRef="Task_RejectStatus" targetRef="Gateway_Merge2"/>
+    <bpmn:sequenceFlow id="Flow_32" sourceRef="Gateway_Merge2" targetRef="Task_AddNotes"/>
+    <bpmn:sequenceFlow id="Flow_33" sourceRef="Task_AddNotes" targetRef="Gateway_MoreCandidates2"/>
+    <bpmn:sequenceFlow id="Flow_34_Yes" name="Да" sourceRef="Gateway_MoreCandidates2" targetRef="Task_ViewStructuredData"/>
+    <bpmn:sequenceFlow id="Flow_34_No" name="Нет" sourceRef="Gateway_MoreCandidates2" targetRef="Task_ExportExcel"/>
+    <bpmn:sequenceFlow id="Flow_35" sourceRef="Task_ExportExcel" targetRef="EndEvent_2"/>
+
+  </bpmn:process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_2">
+    <bpmndi:BPMNPlane id="BPMNPlane_2" bpmnElement="Process_TO_BE">
+      <!-- Визуальная часть будет создана в Camunda Modeler -->
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</bpmn:definitions>

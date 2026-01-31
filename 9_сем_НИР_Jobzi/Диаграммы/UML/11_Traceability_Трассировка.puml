@@ -1,0 +1,152 @@
+@startuml Traceability
+title Диаграмма трассировки: Требования → Компоненты → Тесты
+
+' Определение элементов
+package "Функциональные требования" {
+  rectangle "FR-1: Создание вакансий" as FR1 #LightBlue
+  rectangle "FR-2: Управление анкетами" as FR2 #LightBlue
+  rectangle "FR-3: Обработка откликов" as FR3 #LightBlue
+  rectangle "FR-4: Система рассылок" as FR4 #LightBlue
+  rectangle "FR-5: Администрирование" as FR5 #LightBlue
+}
+
+package "Нефункциональные требования" {
+  rectangle "NFR-1: Производительность" as NFR1 #LightYellow
+  rectangle "NFR-2: Масштабируемость" as NFR2 #LightYellow
+  rectangle "NFR-3: Надежность" as NFR3 #LightYellow
+  rectangle "NFR-4: Безопасность" as NFR4 #LightYellow
+}
+
+package "Архитектурные компоненты" {
+  rectangle "C-1: VacancyDbService" as C1 #LightGreen
+  rectangle "C-2: QuestionDbService" as C2 #LightGreen
+  rectangle "C-3: ApplicationDbService" as C3 #LightGreen
+  rectangle "C-4: BroadcastService" as C4 #LightGreen
+  rectangle "C-5: SuperAdminService" as C5 #LightGreen
+  rectangle "C-6: ConversationStateManager" as C6 #LightGreen
+  rectangle "C-7: ExcelExportService" as C7 #LightGreen
+  rectangle "C-8: JobziBot" as C8 #LightGreen
+}
+
+package "Ключевые функции" {
+  rectangle "F-1: generateUniqueCode()" as F1 #LightCoral
+  rectangle "F-2: saveAnswer()\nсо snapshot" as F2 #LightCoral
+  rectangle "F-3: validateInput()" as F3 #LightCoral
+  rectangle "F-4: exportToExcel()" as F4 #LightCoral
+  rectangle "F-5: sendCampaign()\nс rate limiting" as F5 #LightCoral
+}
+
+package "Тестовые сценарии" {
+  rectangle "TC-1: Создание вакансии\nсо стандартными вопросами" as TC1 #LightPink
+  rectangle "TC-2: Уникальность\nкодов вакансий" as TC2 #LightPink
+  rectangle "TC-3: Отклик с\nзаполнением анкеты" as TC3 #LightPink
+  rectangle "TC-4: Защита\nот дублей" as TC4 #LightPink
+  rectangle "TC-5: Snapshot\nпри изменении вопроса" as TC5 #LightPink
+  rectangle "TC-6: Валидация\nкода вакансии" as TC6 #LightPink
+  rectangle "TC-7: Экспорт\nв Excel" as TC7 #LightPink
+}
+
+' Трассировка FR → Components
+FR1 --> C1 : реализует
+FR1 --> C6 : использует
+FR1 --> C8 : интерфейс
+
+FR2 --> C2 : реализует
+FR2 --> C6 : использует
+
+FR3 --> C3 : реализует
+FR3 --> C7 : использует
+FR3 --> C6 : использует
+
+FR4 --> C4 : реализует
+FR4 --> C8 : интерфейс
+
+FR5 --> C5 : реализует
+FR5 --> C8 : интерфейс
+
+' Трассировка NFR → Components
+NFR1 --> C6 : ConcurrentHashMap
+NFR1 --> C4 : rate limiting
+
+NFR2 --> C1 : мультитенантность
+NFR2 --> C3 : мультитенантность
+
+NFR3 --> C3 : snapshot контекста
+NFR3 --> C1 : @Transactional
+
+NFR4 --> C3 : UNIQUE constraints
+NFR4 --> F3 : валидация
+
+' Трассировка Components → Functions
+C1 --> F1 : содержит
+C3 --> F2 : содержит
+C8 --> F3 : использует
+C7 --> F4 : содержит
+C4 --> F5 : содержит
+
+' Трассировка Functions → Tests
+F1 --> TC2 : проверяет
+F2 --> TC5 : проверяет
+F3 --> TC6 : проверяет
+F4 --> TC7 : проверяет
+
+C1 --> TC1 : тестирует
+C3 --> TC3 : тестирует
+C3 --> TC4 : тестирует
+
+note right of FR1
+  **FR-1: Создание вакансий**
+  - Пошаговый диалог (5 шагов)
+  - Генерация кода ABC123
+  - Статусы: DRAFT/ACTIVE/PAUSED/CLOSED
+  - Время: 2-3 минуты
+end note
+
+note right of F1
+  **generateUniqueCode()**
+  - Формат: [A-Z]{3}\\d{3}
+  - Проверка в БД
+  - 17,576,000 комбинаций
+  - Collision-free
+end note
+
+note right of F2
+  **saveAnswer() со snapshot**
+  Сохраняет:
+  - answerText
+  - questionText (копия)
+  - questionType (копия)
+  - questionOrder (копия)
+
+  Защита от изменения
+  вопросов после отклика
+end note
+
+note bottom of TC1
+  **Покрытие тестами:**
+  - TC-1: E2E создание вакансии
+  - TC-2: 1000 вакансий, 0 дублей
+  - TC-3: E2E отклик + анкета
+  - TC-4: Попытка дубля → ошибка
+  - TC-5: Изменен вопрос → snapshot сохранен
+  - TC-6: Валидация 5 форматов
+  - TC-7: Excel с 100 откликами
+end note
+
+legend right
+  **Легенда:**
+  FR = Functional Requirement
+  NFR = Non-Functional Requirement
+  C = Component
+  F = Function
+  TC = Test Case
+
+  **Метрики трассировки:**
+  - FR покрытие: 100% (5/5)
+  - NFR покрытие: 100% (4/4)
+  - Компонентов: 8
+  - Функций: 5
+  - Тест-кейсов: 7
+end legend
+
+@enduml

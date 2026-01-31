@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  id="Definitions_1"
+                  targetNamespace="http://bpmn.io/schema/bpmn">
+
+  <bpmn:process id="Process_AS_IS" name="Подбор персонала AS-IS (Текущий процесс)" isExecutable="false">
+
+    <bpmn:startEvent id="StartEvent_1" name="Потребность в персонале">
+      <bpmn:outgoing>Flow_01</bpmn:outgoing>
+    </bpmn:startEvent>
+
+    <bpmn:task id="Task_CreatePost" name="Создать объявление вручную">
+      <bpmn:incoming>Flow_01</bpmn:incoming>
+      <bpmn:outgoing>Flow_02</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_PostToChats" name="Разослать в 5-10 Telegram групп вручную">
+      <bpmn:incoming>Flow_02</bpmn:incoming>
+      <bpmn:outgoing>Flow_03</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_ReceiveResponses" name="Получать отклики в разных форматах">
+      <bpmn:incoming>Flow_03</bpmn:incoming>
+      <bpmn:outgoing>Flow_04</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_AskQuestions" name="Переспрашивать данные (имя, телефон, возраст)">
+      <bpmn:incoming>Flow_04</bpmn:incoming>
+      <bpmn:outgoing>Flow_05</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_ManualList" name="Вручную составлять список кандидатов">
+      <bpmn:incoming>Flow_05</bpmn:incoming>
+      <bpmn:outgoing>Flow_06</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:exclusiveGateway id="Gateway_SelectCandidate" name="Кандидат подходит?">
+      <bpmn:incoming>Flow_06</bpmn:incoming>
+      <bpmn:outgoing>Flow_07_Yes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_07_No</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:task id="Task_Contact" name="Связаться с кандидатом">
+      <bpmn:incoming>Flow_07_Yes</bpmn:incoming>
+      <bpmn:outgoing>Flow_08</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:task id="Task_Reject" name="Игнорировать кандидата">
+      <bpmn:incoming>Flow_07_No</bpmn:incoming>
+      <bpmn:outgoing>Flow_09</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:exclusiveGateway id="Gateway_Merge" name="">
+      <bpmn:incoming>Flow_08</bpmn:incoming>
+      <bpmn:incoming>Flow_09</bpmn:incoming>
+      <bpmn:outgoing>Flow_10</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:exclusiveGateway id="Gateway_MoreCandidates" name="Еще кандидаты?">
+      <bpmn:incoming>Flow_10</bpmn:incoming>
+      <bpmn:outgoing>Flow_11_Yes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_11_No</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:task id="Task_LoseHistory" name="Потерять историю переписки">
+      <bpmn:incoming>Flow_11_Yes</bpmn:incoming>
+      <bpmn:outgoing>Flow_12</bpmn:outgoing>
+    </bpmn:task>
+
+    <bpmn:endEvent id="EndEvent_1" name="Набор завершен (4-6 часов потрачено)">
+      <bpmn:incoming>Flow_11_No</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:sequenceFlow id="Flow_01" sourceRef="StartEvent_1" targetRef="Task_CreatePost"/>
+    <bpmn:sequenceFlow id="Flow_02" sourceRef="Task_CreatePost" targetRef="Task_PostToChats"/>
+    <bpmn:sequenceFlow id="Flow_03" sourceRef="Task_PostToChats" targetRef="Task_ReceiveResponses"/>
+    <bpmn:sequenceFlow id="Flow_04" sourceRef="Task_ReceiveResponses" targetRef="Task_AskQuestions"/>
+    <bpmn:sequenceFlow id="Flow_05" sourceRef="Task_AskQuestions" targetRef="Task_ManualList"/>
+    <bpmn:sequenceFlow id="Flow_06" sourceRef="Task_ManualList" targetRef="Gateway_SelectCandidate"/>
+    <bpmn:sequenceFlow id="Flow_07_Yes" name="Да" sourceRef="Gateway_SelectCandidate" targetRef="Task_Contact"/>
+    <bpmn:sequenceFlow id="Flow_07_No" name="Нет" sourceRef="Gateway_SelectCandidate" targetRef="Task_Reject"/>
+    <bpmn:sequenceFlow id="Flow_08" sourceRef="Task_Contact" targetRef="Gateway_Merge"/>
+    <bpmn:sequenceFlow id="Flow_09" sourceRef="Task_Reject" targetRef="Gateway_Merge"/>
+    <bpmn:sequenceFlow id="Flow_10" sourceRef="Gateway_Merge" targetRef="Gateway_MoreCandidates"/>
+    <bpmn:sequenceFlow id="Flow_11_Yes" name="Да" sourceRef="Gateway_MoreCandidates" targetRef="Task_LoseHistory"/>
+    <bpmn:sequenceFlow id="Flow_11_No" name="Нет" sourceRef="Gateway_MoreCandidates" targetRef="EndEvent_1"/>
+    <bpmn:sequenceFlow id="Flow_12" sourceRef="Task_LoseHistory" targetRef="Task_ReceiveResponses"/>
+
+  </bpmn:process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_AS_IS">
+      <!-- Визуальная часть будет создана в Camunda Modeler -->
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</bpmn:definitions>

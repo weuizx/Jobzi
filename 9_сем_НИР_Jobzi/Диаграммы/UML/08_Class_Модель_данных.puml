@@ -1,0 +1,214 @@
+@startuml ClassDiagram
+title Диаграмма классов - Модель данных Jobzi
+
+' Стили
+skinparam class {
+  BackgroundColor<<Entity>> LightYellow
+  BackgroundColor<<Enum>> LightBlue
+}
+
+' Enums
+enum UserRole <<Enum>> {
+  USER
+  SUPERADMIN
+}
+
+enum BusinessRole <<Enum>> {
+  ADMIN
+  MANAGER
+}
+
+enum VacancyStatus <<Enum>> {
+  DRAFT
+  ACTIVE
+  PAUSED
+  CLOSED
+}
+
+enum QuestionType <<Enum>> {
+  TEXT
+  PHONE
+  NUMBER
+  DATE
+  YES_NO
+  CHOICE
+}
+
+enum ApplicationStatus <<Enum>> {
+  NEW
+  VIEWED
+  CONTACTED
+  ACCEPTED
+  REJECTED
+}
+
+' Entities
+class User <<Entity>> {
+  - id: Long
+  - telegramId: Long {unique}
+  - firstName: String
+  - lastName: String
+  - username: String
+  - phoneNumber: String
+  - role: UserRole
+  - isActive: Boolean
+  - createdAt: OffsetDateTime
+  - updatedAt: OffsetDateTime
+  --
+  + isSuperAdmin(): Boolean
+  + isBusinessRepresentative(): Boolean
+}
+
+class Business <<Entity>> {
+  - id: Long
+  - name: String
+  - telegramChatId: Long {unique}
+  - description: String
+  - isActive: Boolean
+  - createdAt: OffsetDateTime
+  - updatedAt: OffsetDateTime
+  --
+  + activate()
+  + block()
+  + unblock()
+}
+
+class BusinessUser <<Entity>> {
+  - id: Long
+  - businessId: Long
+  - userId: Long
+  - role: BusinessRole
+  - createdAt: OffsetDateTime
+  --
+  {unique} (businessId, userId)
+}
+
+class Vacancy <<Entity>> {
+  - id: Long
+  - businessId: Long
+  - code: String(10) {unique}
+  - title: String
+  - description: Text
+  - location: String
+  - salary: String
+  - status: VacancyStatus
+  - createdAt: OffsetDateTime
+  - updatedAt: OffsetDateTime
+  - publishedAt: OffsetDateTime
+  --
+  + publish()
+  + pause()
+  + close()
+  + changeStatus(status)
+}
+
+class Question <<Entity>> {
+  - id: Long
+  - vacancyId: Long
+  - questionText: Text
+  - questionType: QuestionType
+  - isRequired: Boolean
+  - orderIndex: Integer
+  - options: String (JSON)
+  - createdAt: OffsetDateTime
+  --
+  + validate(answer): Boolean
+  + getOptionsAsList(): List<String>
+}
+
+class Application <<Entity>> {
+  - id: Long
+  - vacancyId: Long
+  - userId: Long
+  - status: ApplicationStatus
+  - notes: Text
+  - createdAt: OffsetDateTime
+  - updatedAt: OffsetDateTime
+  --
+  {unique} (vacancyId, userId)
+  --
+  + changeStatus(status)
+  + addNotes(notes)
+}
+
+class Answer <<Entity>> {
+  - id: Long
+  - applicationId: Long
+  - questionId: Long
+  - answerText: Text
+  - questionText: Text <<snapshot>>
+  - questionType: String <<snapshot>>
+  - questionOrder: Integer <<snapshot>>
+  - createdAt: OffsetDateTime
+  --
+  {unique} (applicationId, questionId)
+}
+
+class BroadcastChannel <<Entity>> {
+  - id: Long
+  - businessId: Long
+  - channelId: String
+  - channelName: String
+  - channelType: String
+  - isActive: Boolean
+  - isBotAdmin: Boolean
+  - createdAt: OffsetDateTime
+}
+
+class BroadcastCampaign <<Entity>> {
+  - id: Long
+  - businessId: Long
+  - title: String
+  - messageText: Text
+  - status: String
+  - scheduleEnabled: Boolean
+  - scheduleType: String
+  - scheduleTime: Time
+  - nextSendAt: OffsetDateTime
+  - createdAt: OffsetDateTime
+  - sentAt: OffsetDateTime
+}
+
+' Relationships
+User "1" -- "1" UserRole : has
+User "1" -- "*" BusinessUser : participates
+Business "1" -- "*" BusinessUser : has
+BusinessUser "*" -- "1" BusinessRole : has
+
+Business "1" -- "*" Vacancy : owns
+Vacancy "1" -- "1" VacancyStatus : has
+Vacancy "1" -- "*" Question : has
+Question "1" -- "1" QuestionType : has
+
+Vacancy "1" -- "*" Application : receives
+User "1" -- "*" Application : creates
+Application "1" -- "1" ApplicationStatus : has
+Application "1" -- "*" Answer : has
+Answer "*" -- "1" Question : references
+
+Business "1" -- "*" BroadcastChannel : owns
+Business "1" -- "*" BroadcastCampaign : creates
+
+note right of Answer
+  **Snapshot контекста**
+  Сохраняет копию вопроса
+  на момент отклика для
+  защиты от изменений
+  (поля: questionText,
+  questionType, questionOrder)
+end note
+
+note top of Vacancy
+  **Уникальный код**
+  Формат: ABC123
+  (3 буквы + 3 цифры)
+  Генерируется автоматически
+end note
+
+note bottom of Application
+  **Защита от дублей**
+  UNIQUE constraint на
+  (vacancy_id, user_id)
+end note
+
+@enduml

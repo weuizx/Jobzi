@@ -1,0 +1,115 @@
+@startuml UseCase
+title Диаграмма вариантов использования Jobzi
+
+left to right direction
+
+actor "Суперадмин" as SuperAdmin #LightBlue
+actor "Представитель\nбизнеса" as Business #LightGreen
+actor "Соискатель" as Applicant #LightYellow
+
+rectangle "Система Jobzi" {
+
+  package "Управление бизнесами" #LightBlue {
+    usecase (UC-1: Активировать\nновый бизнес) as UC1
+    usecase (UC-2: Блокировать\nбизнес) as UC2
+    usecase (UC-3: Разблокировать\nбизнес) as UC3
+    usecase (UC-4: Просмотр списка\nбизнесов) as UC4
+    usecase (UC-5: Глобальная\nстатистика) as UC5
+  }
+
+  package "Управление вакансиями" #LightGreen {
+    usecase (UC-6: Создать\nвакансию) as UC6
+    usecase (UC-7: Редактировать\nвакансию) as UC7
+    usecase (UC-8: Удалить\nвакансию) as UC8
+    usecase (UC-9: Изменить статус\nвакансии) as UC9
+    usecase (UC-10: Просмотр\nсписка вакансий) as UC10
+  }
+
+  package "Управление анкетами" #LightGreen {
+    usecase (UC-11: Выбрать\nстандартную анкету) as UC11
+    usecase (UC-12: Создать\nкастомный вопрос) as UC12
+    usecase (UC-13: Редактировать\nвопрос) as UC13
+    usecase (UC-14: Удалить\nвопрос) as UC14
+  }
+
+  package "Управление откликами" #LightGreen {
+    usecase (UC-15: Просмотр\nоткликов) as UC15
+    usecase (UC-16: Изменить\nстатус отклика) as UC16
+    usecase (UC-17: Добавить\nзаметки) as UC17
+    usecase (UC-18: Экспорт\nв Excel) as UC18
+  }
+
+  package "Система рассылок" #LightGreen {
+    usecase (UC-19: Создать\nкампанию) as UC19
+    usecase (UC-20: Отправить\nрассылку) as UC20
+    usecase (UC-21: Управление\nканалами) as UC21
+  }
+
+  package "Функции соискателя" #LightYellow {
+    usecase (UC-22: Откликнуться\nпо коду) as UC22
+    usecase (UC-23: Заполнить\nанкету) as UC23
+    usecase (UC-24: Просмотр\nсвоих откликов) as UC24
+  }
+
+  usecase (UC-25: Генерация\nуникального кода) as UC25 #Technology
+  usecase (UC-26: Snapshot\nконтекста ответов) as UC26 #Technology
+  usecase (UC-27: Валидация\nввода) as UC27 #Technology
+}
+
+' Связи суперадмина
+SuperAdmin --> UC1
+SuperAdmin --> UC2
+SuperAdmin --> UC3
+SuperAdmin --> UC4
+SuperAdmin --> UC5
+
+' Связи представителя бизнеса
+Business --> UC6
+Business --> UC7
+Business --> UC8
+Business --> UC9
+Business --> UC10
+Business --> UC11
+Business --> UC12
+Business --> UC13
+Business --> UC14
+Business --> UC15
+Business --> UC16
+Business --> UC17
+Business --> UC18
+Business --> UC19
+Business --> UC20
+Business --> UC21
+
+' Связи соискателя
+Applicant --> UC22
+Applicant --> UC23
+Applicant --> UC24
+
+' Include зависимости
+UC6 ..> UC25 : <<include>>
+UC6 ..> UC11 : <<include>>
+UC23 ..> UC26 : <<include>>
+UC22 ..> UC27 : <<include>>
+UC23 ..> UC27 : <<include>>
+
+' Extend зависимости
+UC6 <.. UC12 : <<extend>>
+UC15 <.. UC18 : <<extend>>
+
+note right of UC25
+  Автоматическая генерация
+  кода формата ABC123
+end note
+
+note right of UC26
+  Сохранение контекста
+  вопроса на момент отклика
+end note
+
+note right of UC27
+  Валидация кода вакансии,
+  телефона, числовых полей
+end note
+
+@enduml

@@ -1,0 +1,234 @@
+@startuml SequenceDiagram
+title Диаграмма последовательности: Создание вакансии и отклик
+
+actor "Представитель\nбизнеса" as Business
+participant "JobziBot" as Bot
+participant "BusinessHandler" as Handler
+participant "BusinessTelegramService" as Service
+participant "VacancyDbService" as VacancyDB
+participant "QuestionDbService" as QuestionDB
+participant "ConversationStateManager" as StateManager
+database "PostgreSQL" as DB
+
+== Создание вакансии ==
+
+Business -> Bot: Нажать "➕ Новая вакансия"
+activate Bot
+
+Bot -> Handler: handle(message)
+activate Handler
+
+Handler -> Service: handleNewVacancy(userId)
+activate Service
+
+Service -> StateManager: setState(userId,\nVACANCY_CREATE_TITLE)
+activate StateManager
+StateManager --> Service: OK
+deactivate StateManager
+
+Service --> Handler: "Введите название вакансии"
+deactivate Service
+Handler --> Bot: BotResponse
+deactivate Handler
+Bot --> Business: "Введите название вакансии"
+deactivate Bot
+
+...Пользователь вводит данные...
+
+Business -> Bot: "Разнорабочий"
+activate Bot
+Bot -> Handler: handle(message)
+activate Handler
+Handler -> Service: handleVacancyTitleInput(userId, "Разнорабочий")
+activate Service
+
+Service -> StateManager: setContextValue(userId, "title", "Разнорабочий")
+StateManager --> Service: OK
+
+Service -> StateManager: setState(userId, VACANCY_CREATE_DESCRIPTION)
+StateManager --> Service: OK
+
+Service --> Handler: "Введите описание"
+deactivate Service
+Handler --> Bot: BotResponse
+deactivate Handler
+Bot --> Business: "Введите описание"
+deactivate Bot
+
+...Аналогично для описания, локации, зарплаты...
+
+Business -> Bot: Нажать "✅ Опубликовать"
+activate Bot
+Bot -> Handler: handle(callback)
+activate Handler
+Handler -> Service: handleVacancyPublish(userId)
+activate Service
+
+Service -> StateManager: getContextValue(userId, "title")
+Service -> StateManager: getContextValue(userId, "description")
+Service -> StateManager: getContextValue(userId, "location")
+Service -> StateManager: getContextValue(userId, "salary")
+
+Service -> VacancyDB: createVacancy(businessId, title, description,\nlocation, salary, status=ACTIVE)
+activate VacancyDB
+
+VacancyDB -> VacancyDB: generateUniqueCode()
+note right
+  Генерация кода ABC123:
+  1. Random 3 буквы
+  2. Random 3 цифры
+  3. Проверка в БД
+end note
+
+VacancyDB -> DB: INSERT INTO vacancies\n(business_id, code, title, ...)\nVALUES (1, 'ABC123', ...)
+activate DB
+DB --> VacancyDB: vacancy created
+deactivate DB
+
+VacancyDB --> Service: Vacancy(id=1, code="ABC123")
+deactivate VacancyDB
+
+Service -> StateManager: setState(userId,\nVACANCY_CREATE_QUESTIONNAIRE_CHOICE)
+
+Service --> Handler: "Вакансия создана!\nКод: ABC123\nВыберите тип анкеты"
+deactivate Service
+Handler --> Bot: BotResponse
+deactivate Handler
+Bot --> Business: "Вакансия создана! Код: ABC123"
+deactivate Bot
+
+Business -> Bot: "✅ Стандартные вопросы"
+activate Bot
+Bot -> Handler: handle(callback)
+activate Handler
+Handler -> Service: handleQuestionnaireChoice(userId, "standard")
+activate Service
+
+Service -> QuestionDB: createDefaultQuestions(vacancyId)
+activate QuestionDB
+
+QuestionDB -> DB: INSERT INTO questions\n(vacancy_id, question_text, question_type, ...)\nVALUES (1, 'Как вас зовут?', 'TEXT', ...)
+DB --> QuestionDB: question 1 created
+
+QuestionDB -> DB: INSERT INTO questions\n... (телефон, возраст, опыт)
+DB --> QuestionDB: questions 2-4 created
+
+QuestionDB --> Service: 4 questions created
+deactivate QuestionDB
+
+Service -> StateManager: clearState(userId)
+
+Service --> Handler: "Анкета создана!\nВакансия опубликована"
+deactivate Service
+Handler --> Bot: BotResponse
+deactivate Handler
+Bot --> Business: "Анкета создана! Вакансия опубликована"
+deactivate Bot
+
+== Отклик соискателя ==
+
+actor "Соискатель" as Applicant
+participant "ApplicantHandler" as AppHandler
+participant "ApplicantTelegramService" as AppService
+participant "ApplicationDbService" as AppDB
+
+Applicant -> Bot: "ABC123"
+activate Bot
+Bot -> AppHandler: handle(message)
+activate AppHandler
+AppHandler -> AppService: handleVacancyCodeInput(userId, "ABC123")
+activate AppService
+
+AppService -> AppService: validateCode("ABC123")
+note right
+  Regex: [A-Z]{3}\\d{3}
+end note
+
+AppService -> VacancyDB: findByCode("ABC123")
+activate VacancyDB
+VacancyDB -> DB: SELECT * FROM vacancies\nWHERE code = 'ABC123'\nAND status = 'ACTIVE'
+DB --> VacancyDB: vacancy found
+VacancyDB --> AppService: Vacancy(id=1, title="Разнорабочий", ...)
+deactivate VacancyDB
+
+AppService -> AppDB: existsByVacancyIdAndUserId(vacancyId, userId)
+activate AppDB
+AppDB -> DB: SELECT EXISTS(\n  SELECT 1 FROM applications\n  WHERE vacancy_id = 1\n  AND user_id = 456\n)
+DB --> AppDB: false (нет дубля)
+deactivate AppDB
+
+AppService --> AppHandler: "Вакансия: Разнорабочий\n...\nОткликнуться? [Да] [Нет]"
+deactivate AppService
+AppHandler --> Bot: BotResponse
+deactivate AppHandler
+Bot --> Applicant: Показать информацию о вакансии
+deactivate Bot
+
+Applicant -> Bot: Нажать "Да"
+activate Bot
+Bot -> AppHandler: handle(callback)
+activate AppHandler
+AppHandler -> AppService: handleConfirmApplication(userId)
+activate AppService
+
+AppService -> AppDB: createApplication(vacancyId, userId)
+activate AppDB
+AppDB -> DB: INSERT INTO applications\n(vacancy_id, user_id, status)\nVALUES (1, 456, 'NEW')
+DB --> AppDB: application created (id=1)
+deactivate AppDB
+
+AppService -> QuestionDB: findByVacancyId(vacancyId)
+activate QuestionDB
+QuestionDB -> DB: SELECT * FROM questions\nWHERE vacancy_id = 1\nORDER BY order_index
+DB --> QuestionDB: [q1, q2, q3, q4]
+deactivate QuestionDB
+
+AppService -> StateManager: setState(userId,\nAPPLICANT_ANSWERING_QUESTION)
+AppService -> StateManager: setContextValue(userId,\n"currentQuestionIndex", 0)
+
+AppService --> AppHandler: "Вопрос 1/4:\nКак вас зовут?"
+deactivate AppService
+AppHandler --> Bot: BotResponse
+deactivate AppHandler
+Bot --> Applicant: "Вопрос 1/4: Как вас зовут?"
+deactivate Bot
+
+Applicant -> Bot: "Иван Петров"
+activate Bot
+Bot -> AppHandler: handle(message)
+activate AppHandler
+AppHandler -> AppService: handleQuestionAnswer(userId, "Иван Петров")
+activate AppService
+
+AppService -> AppDB: saveAnswer(applicationId, questionId,\n"Иван Петров", "Как вас зовут?",\n"TEXT", 1)
+activate AppDB
+
+note right
+  **Snapshot контекста:**
+  - answerText = "Иван Петров"
+  - questionText = "Как вас зовут?" (копия)
+  - questionType = "TEXT" (копия)
+  - questionOrder = 1 (копия)
+end note
+
+AppDB -> DB: INSERT INTO answers\n(application_id, question_id,\nanswer_text, question_text,\nquestion_type, question_order)\nVALUES (1, 1, 'Иван Петров',\n'Как вас зовут?', 'TEXT', 1)
+DB --> AppDB: answer saved
+deactivate AppDB
+
+AppService --> AppHandler: "Вопрос 2/4:\nВаш номер телефона"
+deactivate AppService
+AppHandler --> Bot: BotResponse
+deactivate AppHandler
+Bot --> Applicant: "Вопрос 2/4: Ваш номер телефона"
+deactivate Bot
+
+...Аналогично для остальных вопросов...
+
+note over Applicant, DB
+  После всех вопросов:
+  - Отклик завершен
+  - Работодатель получает уведомление
+  - Данные защищены snapshot'ом
+end note
+
+@enduml

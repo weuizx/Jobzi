@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: jobzi-postgres
+    environment:
+      POSTGRES_DB: jobzi
+      POSTGRES_USER: jobzi
+      POSTGRES_PASSWORD: jobzi_password_2024
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - jobzi-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jobzi -d jobzi"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  jobzi-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jobzi-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # Database
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/jobzi
+      SPRING_DATASOURCE_USERNAME: jobzi
+      SPRING_DATASOURCE_PASSWORD: jobzi_password_2024
+
+      # Liquibase
+      SPRING_LIQUIBASE_ENABLED: true
+      SPRING_LIQUIBASE_CHANGE_LOG: classpath:db/changelog/db.changelog-master.xml
+
+      # JPA
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
+      SPRING_JPA_SHOW_SQL: false
+      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: true
+
+      # Telegram Bot (ЗАПОЛНИТЕ СВОИ ЗНАЧЕНИЯ)
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-YOUR_BOT_TOKEN_HERE}
+      TELEGRAM_BOT_USERNAME: ${TELEGRAM_BOT_USERNAME:-YOUR_BOT_USERNAME_HERE}
+
+      # Application
+      SPRING_APPLICATION_NAME: jobzi
+      SERVER_PORT: 8080
+
+      # Logging
+      LOGGING_LEVEL_ROOT: INFO
+      LOGGING_LEVEL_DEV_WEUIZX_JOBZI: DEBUG
+
+    ports:
+      - "8080:8080"
+    networks:
+      - jobzi-network
+    volumes:
+      # Для логов (опционально)
+      - app_logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  postgres_data:
+    driver: local
+  app_logs:
+    driver: local
+
+networks:
+  jobzi-network:
+    driver: bridge
