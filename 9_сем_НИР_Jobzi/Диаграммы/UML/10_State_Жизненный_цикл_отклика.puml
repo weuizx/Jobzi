@@ -1,120 +1,33 @@
 @startuml StateDiagram
 title Диаграмма состояний: Жизненный цикл отклика (Application)
 
-[*] --> NEW : Соискатель отправил\nотклик через анкету
+[*] --> NEW
 
-state "NEW\n(Новый)" as NEW #LightYellow {
-  NEW : Отклик только что создан
-  NEW : Работодатель еще не видел
-  NEW : status = NEW
-}
+state "NEW" as NEW #LightYellow
+state "VIEWED" as VIEWED #LightBlue
+state "CONTACTED" as CONTACTED #LightGreen
+state "ACCEPTED" as ACCEPTED #DarkGreen
+state "REJECTED" as REJECTED #LightCoral
 
-state "VIEWED\n(Просмотрен)" as VIEWED #LightBlue {
-  VIEWED : Работодатель открыл отклик
-  VIEWED : Прочитал ответы на анкету
-  VIEWED : status = VIEWED
-}
+NEW --> VIEWED : [Работодатель открыл]
+NEW --> CONTACTED : [Работодатель связался]
 
-state "CONTACTED\n(В контакте)" as CONTACTED #LightGreen {
-  CONTACTED : Работодатель связался
-  CONTACTED : Идут переговоры
-  CONTACTED : status = CONTACTED
-}
+VIEWED --> CONTACTED : [Связаться с кандидатом]
+VIEWED --> REJECTED : [Не подходит]
 
-state "ACCEPTED\n(Принят)" as ACCEPTED #LightGreen {
-  ACCEPTED : Кандидат одобрен
-  ACCEPTED : Выходит на работу
-  ACCEPTED : status = ACCEPTED
-}
+CONTACTED --> ACCEPTED : [Договорились]
+CONTACTED --> REJECTED : [Отказ]
 
-state "REJECTED\n(Отклонен)" as REJECTED #LightCoral {
-  REJECTED : Кандидат не подошел
-  REJECTED : Больше не рассматривается
-  REJECTED : status = REJECTED
-}
+ACCEPTED --> [*]
+REJECTED --> [*]
 
-NEW --> VIEWED : Работодатель открыл\nдетали отклика
-note on link
-  Действие: Просмотр
-  Актор: Работодатель
-end note
-
-VIEWED --> CONTACTED : Работодатель нажал\n"Изменить статус"\n→ "В контакте"
-note on link
-  Действие: Изменение статуса
-  Актор: Работодатель
-end note
-
-VIEWED --> REJECTED : Работодатель нажал\n"Изменить статус"\n→ "Отклонен"
-note on link
-  Причины:
-  - Не подходит по опыту
-  - Не подходит по возрасту
-  - Неадекватные ответы
-end note
-
-NEW --> CONTACTED : Прямой переход\n(минуя просмотр)
-note on link
-  Редко, но возможно
-end note
-
-CONTACTED --> ACCEPTED : Договорились о выходе\nна работу
-note on link
-  Действие: Изменение статуса
-  Актор: Работодатель
-  Может добавить заметки:
-  "Выходит завтра в 8:00"
-end note
-
-CONTACTED --> REJECTED : Кандидат отказался\nили не подошел
-note on link
-  Причины:
-  - Не устроила зарплата
-  - Передумал
-  - Не пришел на встречу
-end note
-
-ACCEPTED --> [*] : Завершение найма
-note on link
-  Конечное состояние
-  История сохраняется
-end note
-
-REJECTED --> [*] : Завершение обработки
-note on link
-  Конечное состояние
-  История сохраняется
-end note
-
-' Дополнительные действия в состояниях
-NEW : entry / sendNotificationToEmployer()
-VIEWED : entry / updateViewedTimestamp()
-CONTACTED : entry / enableDirectMessaging()
-ACCEPTED : entry / markVacancyAsPartiallyFilled()
-REJECTED : entry / logRejectionReason()
-
-' Заметки о заметках (notes)
-note right of CONTACTED
-  В любом состоянии
-  работодатель может
-  добавить заметки:
-  - "Хороший опыт"
-  - "Позвонить завтра"
-  - "Не берем"
-end note
-
-note bottom of VIEWED
-  **Время в статусе:**
-  NEW → VIEWED: обычно < 1 часа
-  VIEWED → CONTACTED: 1-2 часа
-  CONTACTED → ACCEPTED: 1-3 дня
-end note
-
-note top of ACCEPTED
-  **Статистика:**
-  ~30-40% доходят до ACCEPTED
-  ~40-50% отклоняются в REJECTED
-  ~20-30% остаются в CONTACTED
-end note
+legend right
+  **Состояния отклика:**
+  • NEW - Отклик создан
+  • VIEWED - Просмотрен работодателем
+  • CONTACTED - Идет контакт
+  • ACCEPTED - Кандидат принят
+  • REJECTED - Кандидат отклонен
+end legend
 
 @enduml

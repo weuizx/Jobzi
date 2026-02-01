@@ -13,28 +13,33 @@
       <bpmn:outgoing>Flow_01</bpmn:outgoing>
     </bpmn:startEvent>
 
-    <bpmn:task id="Task_CreatePost" name="Создать объявление вручную&#10;(30-40 минут)">
+    <bpmn:task id="Task_CreatePost" name="1. Создать объявление вручную&#10;(30-40 минут)">
       <bpmn:incoming>Flow_01</bpmn:incoming>
       <bpmn:outgoing>Flow_02</bpmn:outgoing>
     </bpmn:task>
 
-    <bpmn:task id="Task_PostToChats" name="Разослать в 5-10 Telegram групп вручную&#10;(20-30 минут)">
+    <bpmn:task id="Task_PostToChats" name="2. Разослать в 5-10 Telegram групп вручную&#10;(20-30 минут)">
       <bpmn:incoming>Flow_02</bpmn:incoming>
       <bpmn:outgoing>Flow_03</bpmn:outgoing>
     </bpmn:task>
 
-    <bpmn:task id="Task_ReceiveResponses" name="Получать отклики в разных форматах">
+    <bpmn:exclusiveGateway id="Gateway_MergeBeforeReceive">
       <bpmn:incoming>Flow_03</bpmn:incoming>
       <bpmn:incoming>Flow_12</bpmn:incoming>
+      <bpmn:outgoing>Flow_03a</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:task id="Task_ReceiveResponses" name="3. Получать отклики в разных форматах">
+      <bpmn:incoming>Flow_03a</bpmn:incoming>
       <bpmn:outgoing>Flow_04</bpmn:outgoing>
     </bpmn:task>
 
-    <bpmn:task id="Task_AskQuestions" name="Переспрашивать данные&#10;(имя, телефон, возраст)">
+    <bpmn:task id="Task_AskQuestions" name="4. Переспрашивать данные&#10;(имя, телефон, возраст)">
       <bpmn:incoming>Flow_04</bpmn:incoming>
       <bpmn:outgoing>Flow_05</bpmn:outgoing>
     </bpmn:task>
 
-    <bpmn:task id="Task_ManualList" name="Вручную составлять список кандидатов в Excel">
+    <bpmn:task id="Task_ManualList" name="5. Вручную составлять список кандидатов в Excel">
       <bpmn:incoming>Flow_05</bpmn:incoming>
       <bpmn:outgoing>Flow_06</bpmn:outgoing>
     </bpmn:task>
@@ -45,12 +50,12 @@
       <bpmn:outgoing>Flow_07_No</bpmn:outgoing>
     </bpmn:exclusiveGateway>
 
-    <bpmn:task id="Task_Contact" name="Связаться с кандидатом">
+    <bpmn:task id="Task_Contact" name="6. Связаться с кандидатом">
       <bpmn:incoming>Flow_07_Yes</bpmn:incoming>
       <bpmn:outgoing>Flow_08</bpmn:outgoing>
     </bpmn:task>
 
-    <bpmn:task id="Task_Reject" name="Игнорировать кандидата">
+    <bpmn:task id="Task_Reject" name="6. Игнорировать кандидата">
       <bpmn:incoming>Flow_07_No</bpmn:incoming>
       <bpmn:outgoing>Flow_09</bpmn:outgoing>
     </bpmn:task>
@@ -67,7 +72,7 @@
       <bpmn:outgoing>Flow_11_No</bpmn:outgoing>
     </bpmn:exclusiveGateway>
 
-    <bpmn:task id="Task_LoseHistory" name="Риск потерять историю переписки">
+    <bpmn:task id="Task_LoseHistory" name="7. Риск потерять историю переписки">
       <bpmn:incoming>Flow_11_Yes</bpmn:incoming>
       <bpmn:outgoing>Flow_12</bpmn:outgoing>
     </bpmn:task>
@@ -78,7 +83,8 @@
 
     <bpmn:sequenceFlow id="Flow_01" sourceRef="StartEvent_1" targetRef="Task_CreatePost"/>
     <bpmn:sequenceFlow id="Flow_02" sourceRef="Task_CreatePost" targetRef="Task_PostToChats"/>
-    <bpmn:sequenceFlow id="Flow_03" sourceRef="Task_PostToChats" targetRef="Task_ReceiveResponses"/>
+    <bpmn:sequenceFlow id="Flow_03" sourceRef="Task_PostToChats" targetRef="Gateway_MergeBeforeReceive"/>
+    <bpmn:sequenceFlow id="Flow_03a" sourceRef="Gateway_MergeBeforeReceive" targetRef="Task_ReceiveResponses"/>
     <bpmn:sequenceFlow id="Flow_04" sourceRef="Task_ReceiveResponses" targetRef="Task_AskQuestions"/>
     <bpmn:sequenceFlow id="Flow_05" sourceRef="Task_AskQuestions" targetRef="Task_ManualList"/>
     <bpmn:sequenceFlow id="Flow_06" sourceRef="Task_ManualList" targetRef="Gateway_SelectCandidate"/>
@@ -89,7 +95,7 @@
     <bpmn:sequenceFlow id="Flow_10" sourceRef="Gateway_Merge" targetRef="Gateway_MoreCandidates"/>
     <bpmn:sequenceFlow id="Flow_11_Yes" name="Да" sourceRef="Gateway_MoreCandidates" targetRef="Task_LoseHistory"/>
     <bpmn:sequenceFlow id="Flow_11_No" name="Нет" sourceRef="Gateway_MoreCandidates" targetRef="EndEvent_1"/>
-    <bpmn:sequenceFlow id="Flow_12" sourceRef="Task_LoseHistory" targetRef="Task_ReceiveResponses"/>
+    <bpmn:sequenceFlow id="Flow_12" sourceRef="Task_LoseHistory" targetRef="Gateway_MergeBeforeReceive"/>
 
   </bpmn:process>
 
@@ -114,62 +120,67 @@
         <dc:Bounds x="390" y="80" width="100" height="80"/>
       </bpmndi:BPMNShape>
 
+      <!-- Gateway: Merge Before Receive -->
+      <bpmndi:BPMNShape id="Gateway_MergeBeforeReceive_di" bpmnElement="Gateway_MergeBeforeReceive" isMarkerVisible="true">
+        <dc:Bounds x="515" y="95" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+
       <!-- Task: Receive Responses -->
       <bpmndi:BPMNShape id="Task_ReceiveResponses_di" bpmnElement="Task_ReceiveResponses">
-        <dc:Bounds x="540" y="80" width="100" height="80"/>
+        <dc:Bounds x="590" y="80" width="100" height="80"/>
       </bpmndi:BPMNShape>
 
       <!-- Task: Ask Questions -->
       <bpmndi:BPMNShape id="Task_AskQuestions_di" bpmnElement="Task_AskQuestions">
-        <dc:Bounds x="690" y="80" width="100" height="80"/>
+        <dc:Bounds x="740" y="80" width="100" height="80"/>
       </bpmndi:BPMNShape>
 
       <!-- Task: Manual List -->
       <bpmndi:BPMNShape id="Task_ManualList_di" bpmnElement="Task_ManualList">
-        <dc:Bounds x="840" y="80" width="100" height="80"/>
+        <dc:Bounds x="890" y="80" width="100" height="80"/>
       </bpmndi:BPMNShape>
 
       <!-- Gateway: Select Candidate -->
       <bpmndi:BPMNShape id="Gateway_SelectCandidate_di" bpmnElement="Gateway_SelectCandidate" isMarkerVisible="true">
-        <dc:Bounds x="995" y="95" width="50" height="50"/>
+        <dc:Bounds x="1045" y="95" width="50" height="50"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="983" y="65" width="74" height="27"/>
+          <dc:Bounds x="1033" y="65" width="74" height="27"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
 
       <!-- Task: Contact -->
       <bpmndi:BPMNShape id="Task_Contact_di" bpmnElement="Task_Contact">
-        <dc:Bounds x="1100" y="80" width="100" height="80"/>
+        <dc:Bounds x="1150" y="80" width="100" height="80"/>
       </bpmndi:BPMNShape>
 
       <!-- Task: Reject -->
       <bpmndi:BPMNShape id="Task_Reject_di" bpmnElement="Task_Reject">
-        <dc:Bounds x="1100" y="200" width="100" height="80"/>
+        <dc:Bounds x="1150" y="200" width="100" height="80"/>
       </bpmndi:BPMNShape>
 
       <!-- Gateway: Merge -->
       <bpmndi:BPMNShape id="Gateway_Merge_di" bpmnElement="Gateway_Merge" isMarkerVisible="true">
-        <dc:Bounds x="1255" y="95" width="50" height="50"/>
+        <dc:Bounds x="1305" y="95" width="50" height="50"/>
       </bpmndi:BPMNShape>
 
       <!-- Gateway: More Candidates -->
       <bpmndi:BPMNShape id="Gateway_MoreCandidates_di" bpmnElement="Gateway_MoreCandidates" isMarkerVisible="true">
-        <dc:Bounds x="1355" y="95" width="50" height="50"/>
+        <dc:Bounds x="1405" y="95" width="50" height="50"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1352" y="65" width="56" height="27"/>
+          <dc:Bounds x="1402" y="65" width="56" height="27"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
 
       <!-- Task: Lose History -->
       <bpmndi:BPMNShape id="Task_LoseHistory_di" bpmnElement="Task_LoseHistory">
-        <dc:Bounds x="1330" y="200" width="100" height="80"/>
+        <dc:Bounds x="1380" y="200" width="100" height="80"/>
       </bpmndi:BPMNShape>
 
       <!-- End Event -->
       <bpmndi:BPMNShape id="EndEvent_1_di" bpmnElement="EndEvent_1">
-        <dc:Bounds x="1462" y="102" width="36" height="36"/>
+        <dc:Bounds x="1512" y="102" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1448" y="145" width="64" height="40"/>
+          <dc:Bounds x="1498" y="145" width="64" height="40"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
 
@@ -186,78 +197,83 @@
 
       <bpmndi:BPMNEdge id="Flow_03_di" bpmnElement="Flow_03">
         <di:waypoint x="490" y="120"/>
-        <di:waypoint x="540" y="120"/>
+        <di:waypoint x="515" y="120"/>
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_03a_di" bpmnElement="Flow_03a">
+        <di:waypoint x="565" y="120"/>
+        <di:waypoint x="590" y="120"/>
       </bpmndi:BPMNEdge>
 
       <bpmndi:BPMNEdge id="Flow_04_di" bpmnElement="Flow_04">
-        <di:waypoint x="640" y="120"/>
         <di:waypoint x="690" y="120"/>
+        <di:waypoint x="740" y="120"/>
       </bpmndi:BPMNEdge>
 
       <bpmndi:BPMNEdge id="Flow_05_di" bpmnElement="Flow_05">
-        <di:waypoint x="790" y="120"/>
         <di:waypoint x="840" y="120"/>
+        <di:waypoint x="890" y="120"/>
       </bpmndi:BPMNEdge>
 
       <bpmndi:BPMNEdge id="Flow_06_di" bpmnElement="Flow_06">
-        <di:waypoint x="940" y="120"/>
-        <di:waypoint x="995" y="120"/>
+        <di:waypoint x="990" y="120"/>
+        <di:waypoint x="1045" y="120"/>
       </bpmndi:BPMNEdge>
 
       <bpmndi:BPMNEdge id="Flow_07_Yes_di" bpmnElement="Flow_07_Yes">
-        <di:waypoint x="1045" y="120"/>
-        <di:waypoint x="1100" y="120"/>
+        <di:waypoint x="1095" y="120"/>
+        <di:waypoint x="1150" y="120"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1063" y="102" width="14" height="14"/>
+          <dc:Bounds x="1113" y="102" width="14" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
 
       <bpmndi:BPMNEdge id="Flow_07_No_di" bpmnElement="Flow_07_No">
-        <di:waypoint x="1020" y="145"/>
-        <di:waypoint x="1020" y="240"/>
-        <di:waypoint x="1100" y="240"/>
+        <di:waypoint x="1070" y="145"/>
+        <di:waypoint x="1070" y="240"/>
+        <di:waypoint x="1150" y="240"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1024" y="190" width="20" height="14"/>
+          <dc:Bounds x="1074" y="190" width="20" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
 
       <bpmndi:BPMNEdge id="Flow_08_di" bpmnElement="Flow_08">
-        <di:waypoint x="1200" y="120"/>
-        <di:waypoint x="1255" y="120"/>
+        <di:waypoint x="1250" y="120"/>
+        <di:waypoint x="1305" y="120"/>
       </bpmndi:BPMNEdge>
 
       <bpmndi:BPMNEdge id="Flow_09_di" bpmnElement="Flow_09">
-        <di:waypoint x="1200" y="240"/>
-        <di:waypoint x="1280" y="240"/>
-        <di:waypoint x="1280" y="145"/>
+        <di:waypoint x="1250" y="240"/>
+        <di:waypoint x="1330" y="240"/>
+        <di:waypoint x="1330" y="145"/>
       </bpmndi:BPMNEdge>
 
       <bpmndi:BPMNEdge id="Flow_10_di" bpmnElement="Flow_10">
-        <di:waypoint x="1305" y="120"/>
         <di:waypoint x="1355" y="120"/>
+        <di:waypoint x="1405" y="120"/>
       </bpmndi:BPMNEdge>
 
       <bpmndi:BPMNEdge id="Flow_11_Yes_di" bpmnElement="Flow_11_Yes">
-        <di:waypoint x="1380" y="145"/>
-        <di:waypoint x="1380" y="200"/>
+        <di:waypoint x="1430" y="145"/>
+        <di:waypoint x="1430" y="200"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1384" y="170" width="14" height="14"/>
+          <dc:Bounds x="1434" y="170" width="14" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
 
       <bpmndi:BPMNEdge id="Flow_11_No_di" bpmnElement="Flow_11_No">
-        <di:waypoint x="1405" y="120"/>
-        <di:waypoint x="1462" y="120"/>
+        <di:waypoint x="1455" y="120"/>
+        <di:waypoint x="1512" y="120"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1420" y="102" width="20" height="14"/>
+          <dc:Bounds x="1470" y="102" width="20" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
 
       <bpmndi:BPMNEdge id="Flow_12_di" bpmnElement="Flow_12">
-        <di:waypoint x="1380" y="280"/>
-        <di:waypoint x="1380" y="340"/>
-        <di:waypoint x="590" y="340"/>
-        <di:waypoint x="590" y="160"/>
+        <di:waypoint x="1430" y="280"/>
+        <di:waypoint x="1430" y="340"/>
+        <di:waypoint x="540" y="340"/>
+        <di:waypoint x="540" y="145"/>
       </bpmndi:BPMNEdge>
 
     </bpmndi:BPMNPlane>

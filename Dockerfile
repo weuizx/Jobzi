@@ -1,5 +1,5 @@
 # Multi-stage build для уменьшения размера образа
-FROM gradle:8.10-jdk21 AS build
+FROM gradle:8.14-jdk-21-and-24 AS build
 
 WORKDIR /app
 
