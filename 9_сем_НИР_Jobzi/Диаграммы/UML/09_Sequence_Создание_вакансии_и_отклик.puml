@@ -36,14 +36,16 @@ deactivate Bot
 Business -> Bot: Нажать "✅ Опубликовать"
 activate Bot
 
-Bot -> DB: Сгенерировать код ABC123
-activate DB
-DB --> Bot: Код сгенерирован
-deactivate DB
+Bot -> Bot: Сгенерировать\nуникальный код ABC123
+note right
+  VacancyDbService
+  генерирует код:
+  [A-Z]{3}\\d{3}
+end note
 
-Bot -> DB: Создать вакансию
+Bot -> DB: Создать вакансию\n(code=ABC123, title, description,\nlocation, salary, status=ACTIVE)
 activate DB
-DB --> Bot: Вакансия создана (id=1, code=ABC123)
+DB --> Bot: Вакансия создана\n(id=1, code=ABC123)
 deactivate DB
 
 Bot --> Business: "✅ Вакансия создана!\nКод: ABC123"
@@ -65,12 +67,17 @@ deactivate Bot
 Applicant -> Bot: /apply ABC123
 activate Bot
 
-Bot -> DB: Проверить код вакансии
+Bot -> Bot: Валидировать\nформат кода
+note right
+  Regex: [A-Z]{3}\\d{3}
+end note
+
+Bot -> DB: Проверить код вакансии\n(SELECT WHERE code=ABC123\nAND status=ACTIVE)
 activate DB
 DB --> Bot: Вакансия найдена
 deactivate DB
 
-Bot -> DB: Проверить дубли откликов
+Bot -> DB: Проверить дубли откликов\n(SELECT WHERE vacancy_id=1\nAND user_id=456)
 activate DB
 DB --> Bot: Дублей нет
 deactivate DB
@@ -81,12 +88,12 @@ deactivate Bot
 Applicant -> Bot: Нажать "✅ Откликнуться"
 activate Bot
 
-Bot -> DB: Создать отклик (status=NEW)
+Bot -> DB: Создать отклик\n(vacancy_id=1, user_id=456,\nstatus=NEW)
 activate DB
 DB --> Bot: Отклик создан (id=1)
 deactivate DB
 
-Bot -> DB: Загрузить вопросы вакансии
+Bot -> DB: Загрузить вопросы вакансии\n(SELECT WHERE vacancy_id=1\nORDER BY order_index)
 activate DB
 DB --> Bot: [Вопрос 1, 2, 3, 4]
 deactivate DB
@@ -97,14 +104,12 @@ deactivate Bot
 Applicant -> Bot: "Иван Петров"
 activate Bot
 
-Bot -> DB: Сохранить ответ со snapshot
+Bot -> DB: Сохранить ответ со snapshot\n(answer_text, question_text,\nquestion_type, question_order)
 activate DB
 note right
   Snapshot контекста:
-  - answer_text
-  - question_text
-  - question_type
-  - question_order
+  защита от изменений
+  вопроса после отклика
 end note
 DB --> Bot: Ответ сохранен
 deactivate DB
@@ -112,10 +117,15 @@ deactivate DB
 Bot --> Applicant: "Вопрос 2/4:\nВаш номер телефона?"
 deactivate Bot
 
-Applicant -> Bot: "+79001234567"
+Applicant -> Bot: "+79991234567"
 activate Bot
 
-Bot -> DB: Валидировать и сохранить
+Bot -> Bot: Валидировать\nформат телефона
+note right
+  +7XXXXXXXXXX
+end note
+
+Bot -> DB: Сохранить ответ
 activate DB
 DB --> Bot: Ответ сохранен
 deactivate DB
@@ -143,9 +153,9 @@ DB --> Bot: Все ответы сохранены
 deactivate DB
 
 Bot --> Applicant: "✅ Отклик успешно отправлен!"
-deactivate Bot
 
-Bot -> Business: 📩 Уведомление:\n"Новый отклик на ABC123\nИмя: Иван Петров\nТелефон: +79001234567"
+Bot -> Business: 📩 Уведомление:\n"Новый отклик на ABC123\nИмя: Иван Петров\nТелефон: +79991234567"
+deactivate Bot
 
 legend right
   **Основные сущности:**
@@ -153,6 +163,11 @@ legend right
   • Соискатель - кандидат на вакансию
   • Jobzi Bot - Telegram бот системы
   • База данных - PostgreSQL
+
+  **Важно:**
+  • Код вакансии генерирует Bot (VacancyDbService)
+  • БД только сохраняет данные
+  • Валидация происходит в Bot
 end legend
 
 @enduml
