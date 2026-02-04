@@ -55,7 +55,7 @@
       <bpmn:outgoing>Flow_08</bpmn:outgoing>
     </bpmn:task>
 
-    <bpmn:task id="Task_Reject" name="6. Игнорировать кандидата">
+    <bpmn:task id="Task_Reject" name="7. Игнорировать кандидата">
       <bpmn:incoming>Flow_07_No</bpmn:incoming>
       <bpmn:outgoing>Flow_09</bpmn:outgoing>
     </bpmn:task>
@@ -72,7 +72,7 @@
       <bpmn:outgoing>Flow_11_No</bpmn:outgoing>
     </bpmn:exclusiveGateway>
 
-    <bpmn:task id="Task_LoseHistory" name="7. Риск потерять историю переписки">
+    <bpmn:task id="Task_LoseHistory" name="8. Риск потерять историю переписки">
       <bpmn:incoming>Flow_11_Yes</bpmn:incoming>
       <bpmn:outgoing>Flow_12</bpmn:outgoing>
     </bpmn:task>

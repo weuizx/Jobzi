@@ -1,4 +1,4 @@
-@startuml Activity_TO-BE_Steps6-8_Updated
+@startuml Activity_TO-BE_Step6-8
 title Activity Diagram: TO-BE - Шаги 6-8. Получение и обработка откликов
 
 |#LightYellow|Входные/Выходные объекты|
@@ -131,7 +131,7 @@ note right: Автоматизировано системой
 
 |Входные/Выходные объекты|
 :Структурированный\nсписок\nоткликов;
-note right: Выходные данные\nВремя: 30 сек - 1 мин
+note right: Выходные данные
 
 |Роль|
 :Работодатель;

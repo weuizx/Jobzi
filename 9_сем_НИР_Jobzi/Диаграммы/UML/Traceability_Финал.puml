@@ -1,0 +1,235 @@
+@startuml Traceability
+title Диаграмма трассировки: Шаги процесса → Требования пользователя → Функции
+
+skinparam rectangle {
+  BackgroundColor<<process>> #E6F3FF
+  BackgroundColor<<req>> #FFF9E6
+  BackgroundColor<<func>> #FFE4B5
+  BorderColor Black
+  FontSize 10
+}
+
+skinparam arrow {
+  Color Gray
+}
+
+' Заголовки колонок
+rectangle "**Шаг процесса:**" as header1 <<process>> {
+}
+
+rectangle "**Требования пользователя:**" as header2 <<req>> {
+}
+
+rectangle "**Функции:**" as header3 <<func>> {
+}
+
+header1 -[hidden]right-> header2
+header2 -[hidden]right-> header3
+
+' Строка 1
+rectangle "2.1 Система открывает\nинтерфейс создания\nвакансии" as S21 <<process>>
+rectangle "Доступ к простому\nинтерфейсу создания\nвакансии" as R21 <<req>>
+rectangle "UC-6: Создать\nвакансию" as F21 <<func>>
+
+S21 -right-> R21
+R21 -right-> F21
+
+header1 -[hidden]down-> S21
+header2 -[hidden]down-> R21
+header3 -[hidden]down-> F21
+
+' Строка 2
+rectangle "2.2 Система запрашивает\nназвание вакансии" as S22 <<process>>
+rectangle "Пошаговый диалог\nдля ввода данных\nвакансии" as R22 <<req>>
+rectangle "UC-6: Создать\nвакансию" as F22 <<func>>
+
+S22 -right-> R22
+R22 -right-> F22
+
+S21 -[hidden]down-> S22
+R21 -[hidden]down-> R22
+F21 -[hidden]down-> F22
+
+' Строка 3
+rectangle "2.10 Система показывает\nпредпросмотр вакансии" as S210 <<process>>
+rectangle "Возможность просмотра\nвакансии перед\nпубликацией" as R210 <<req>>
+rectangle "UC-6: Создать\nвакансию" as F210a <<func>>
+rectangle "UC-10: Просмотр\nвакансий" as F210b <<func>>
+
+S210 -right-> R210
+R210 -right-> F210a
+R210 -right-> F210b
+
+S22 -[hidden]down-> S210
+R22 -[hidden]down-> R210
+F22 -[hidden]down-> F210a
+
+' Строка 4
+rectangle "2.12 Система генерирует\nуникальный код ABC123" as S212 <<process>>
+rectangle "Автоматическая генерация\nкороткого кода" as R212 <<req>>
+rectangle "UC-25: Генерация\nуникального кода" as F212 <<func>>
+
+S212 -right-> R212
+R212 -right-> F212
+
+S210 -[hidden]down-> S212
+R210 -[hidden]down-> R212
+F210b -[hidden]down-> F212
+
+' Строка 5
+rectangle "2.13 Система сохраняет\nвакансию в БД" as S213 <<process>>
+rectangle "Надежное хранение\nданных вакансии" as R213 <<req>>
+rectangle "UC-6: Создать\nвакансию" as F213 <<func>>
+
+S213 -right-> R213
+R213 -right-> F213
+
+S212 -[hidden]down-> S213
+R212 -[hidden]down-> R213
+F212 -[hidden]down-> F213
+
+' Строка 6
+rectangle "3.1 Система предлагает\nвыбрать тип анкеты" as S31 <<process>>
+rectangle "Выбор стандартной\nили кастомной анкеты" as R31 <<req>>
+rectangle "UC-11: Стандартная\nанкета" as F31a <<func>>
+rectangle "UC-12: Кастомный\nвопрос" as F31b <<func>>
+
+S31 -right-> R31
+R31 -right-> F31a
+R31 -right-> F31b
+
+S213 -[hidden]down-> S31
+R213 -[hidden]down-> R31
+F213 -[hidden]down-> F31a
+
+' Строка 7
+rectangle "5.1 Система автоматически\nрассылает в группы" as S51 <<process>>
+rectangle "Автоматическая рассылка\nв Telegram-группы" as R51 <<req>>
+rectangle "UC-19: Создать\nкампанию" as F51a <<func>>
+rectangle "UC-20: Отправить\nрассылку" as F51b <<func>>
+
+S51 -right-> R51
+R51 -right-> F51a
+R51 -right-> F51b
+
+S31 -[hidden]down-> S51
+R31 -[hidden]down-> R51
+F31b -[hidden]down-> F51a
+
+' Строка 8
+rectangle "6.2 Система находит\nвакансию по коду" as S62 <<process>>
+rectangle "Быстрый поиск\nпо короткому коду" as R62 <<req>>
+rectangle "UC-22: Откликнуться" as F62a <<func>>
+rectangle "UC-27: Валидация" as F62b <<func>>
+
+S62 -right-> R62
+R62 -right-> F62a
+R62 -right-> F62b
+
+S51 -[hidden]down-> S62
+R51 -[hidden]down-> R62
+F51b -[hidden]down-> F62a
+
+' Строка 9
+rectangle "6.5 Система загружает\nвопросы анкеты" as S65 <<process>>
+rectangle "Автоматическая подгрузка\nанкеты" as R65 <<req>>
+rectangle "UC-23: Заполнить\nанкету" as F65 <<func>>
+
+S65 -right-> R65
+R65 -right-> F65
+
+S62 -[hidden]down-> S65
+R62 -[hidden]down-> R65
+F62b -[hidden]down-> F65
+
+' Строка 10
+rectangle "6.8 Система валидирует\nответ" as S68 <<process>>
+rectangle "Проверка корректности\nввода в реальном времени" as R68 <<req>>
+rectangle "UC-27: Валидация\nввода" as F68 <<func>>
+
+S68 -right-> R68
+R68 -right-> F68
+
+S65 -[hidden]down-> S68
+R65 -[hidden]down-> R68
+F65 -[hidden]down-> F68
+
+' Строка 11
+rectangle "7.1 Система создает\nотклик в БД" as S71 <<process>>
+rectangle "Надежное сохранение\nотклика" as R71 <<req>>
+rectangle "UC-22: Откликнуться\nпо коду" as F71 <<func>>
+
+S71 -right-> R71
+R71 -right-> F71
+
+S68 -[hidden]down-> S71
+R68 -[hidden]down-> R71
+F68 -[hidden]down-> F71
+
+' Строка 12
+rectangle "7.2 Система сохраняет\nответы со snapshot" as S72 <<process>>
+rectangle "Защита данных от\nизменения вопросов" as R72 <<req>>
+rectangle "UC-26: Snapshot\nконтекста" as F72 <<func>>
+
+S72 -right-> R72
+R72 -right-> F72
+
+S71 -[hidden]down-> S72
+R71 -[hidden]down-> R72
+F71 -[hidden]down-> F72
+
+' Строка 13
+rectangle "7.3 Система устанавливает\nстатус NEW" as S73 <<process>>
+rectangle "Автоматическая установка\nначального статуса" as R73 <<req>>
+rectangle "UC-15: Просмотр\nоткликов" as F73a <<func>>
+rectangle "UC-16: Изменить\nстатус" as F73b <<func>>
+
+S73 -right-> R73
+R73 -right-> F73a
+R73 -right-> F73b
+
+S72 -[hidden]down-> S73
+R72 -[hidden]down-> R73
+F72 -[hidden]down-> F73a
+
+' Строка 14
+rectangle "8.1 Система уведомляет\nработодателя" as S81 <<process>>
+rectangle "Мгновенные уведомления\nо новых откликах" as R81 <<req>>
+rectangle "UC-15: Просмотр\nоткликов" as F81 <<func>>
+
+S81 -right-> R81
+R81 -right-> F81
+
+S73 -[hidden]down-> S81
+R73 -[hidden]down-> R81
+F73b -[hidden]down-> F81
+
+' Строка 15
+rectangle "8.3 Система отображает\nструктурированные отклики" as S83 <<process>>
+rectangle "Просмотр откликов\nс фильтрацией" as R83 <<req>>
+rectangle "UC-15: Просмотр\nоткликов" as F83a <<func>>
+rectangle "UC-16: Изменить\nстатус" as F83b <<func>>
+rectangle "UC-17: Добавить\nзаметки" as F83c <<func>>
+
+S83 -right-> R83
+R83 -right-> F83a
+R83 -right-> F83b
+R83 -right-> F83c
+
+S81 -[hidden]down-> S83
+R81 -[hidden]down-> R83
+F81 -[hidden]down-> F83a
+
+' Строка 16
+rectangle "12.1 Система генерирует\nExcel файл" as S121 <<process>>
+rectangle "Экспорт данных в Excel\nдля обработки" as R121 <<req>>
+rectangle "UC-18: Экспорт\nв Excel" as F121 <<func>>
+
+S121 -right-> R121
+R121 -right-> F121
+
+S83 -[hidden]down-> S121
+R83 -[hidden]down-> R121
+F83c -[hidden]down-> F121
+
+@enduml
