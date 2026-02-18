@@ -18,12 +18,20 @@ java {
 
 repositories {
 	mavenCentral()
+	maven {
+		url = uri("https://jitpack.io")
+	}
+	maven {
+		url = uri("https://mvn.mchv.eu/repository/mchv/")
+	}
 }
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-jdbc")
+	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-websocket")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 
 	// JSON processing
@@ -38,6 +46,28 @@ dependencies {
 
 	// Telegram Bot API
 	implementation("org.telegram:telegrambots-spring-boot-starter:6.9.7.1")
+
+	// Telegram Client API (TDLight)
+	// Основная библиотека
+	implementation("it.tdlight:tdlight-java:3.4.4+td.1.8.52")
+
+	// Нативные библиотеки (используют свою нумерацию версий!)
+	// Для macOS Intel
+	runtimeOnly(group = "it.tdlight", name = "tdlight-natives", version = "4.0.558", classifier = "macos_amd64")
+	// Для macOS Apple Silicon (ARM)
+	runtimeOnly(group = "it.tdlight", name = "tdlight-natives", version = "4.0.558", classifier = "macos_arm64")
+	// Раскомментируйте для Linux deployment:
+	// runtimeOnly(group = "it.tdlight", name = "tdlight-natives", version = "4.0.558", classifier = "linux_amd64_gnu_ssl3")
+
+	// Coroutines для асинхронных операций
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.9.0")
+
+	// SLF4J для логирования
+	implementation("org.slf4j:slf4j-api:2.0.9")
+
+	// Guava for rate limiting
+	implementation("com.google.guava:guava:33.0.0-jre")
 
 	// Apache POI for Excel export
 	implementation("org.apache.poi:poi:5.2.5")

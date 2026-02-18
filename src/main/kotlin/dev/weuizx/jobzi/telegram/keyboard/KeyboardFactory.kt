@@ -23,6 +23,7 @@ object KeyboardFactory {
                 add(KeyboardButton("📊 Статистика"))
             },
             KeyboardRow().apply {
+                add(KeyboardButton("📱 Telegram аккаунты"))
                 add(KeyboardButton("❓ Помощь"))
             }
         )
@@ -657,6 +658,75 @@ object KeyboardFactory {
             },
             KeyboardRow().apply {
                 add(KeyboardButton("◀️ Назад"))
+            }
+        )
+
+        return ReplyKeyboardMarkup().apply {
+            this.keyboard = keyboard
+            this.resizeKeyboard = true
+            this.oneTimeKeyboard = false
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // Клавиатуры для управления Telegram пулом (SuperAdmin)
+    // ═══════════════════════════════════════════════════════════════
+
+    /**
+     * Клавиатура для меню управления Telegram аккаунтами
+     */
+    fun createTelegramPoolMenuKeyboard(): ReplyKeyboardMarkup {
+        val keyboard = listOf(
+            KeyboardRow().apply {
+                add(KeyboardButton("📋 Список аккаунтов"))
+                add(KeyboardButton("➕ Добавить аккаунт"))
+            },
+            KeyboardRow().apply {
+                add(KeyboardButton("📊 Статус пула"))
+            },
+            KeyboardRow().apply {
+                add(KeyboardButton("◀️ Назад в меню"))
+            }
+        )
+
+        return ReplyKeyboardMarkup().apply {
+            this.keyboard = keyboard
+            this.resizeKeyboard = true
+            this.oneTimeKeyboard = false
+        }
+    }
+
+    /**
+     * Клавиатура для действий с конкретным аккаунтом
+     */
+    fun createAccountActionsKeyboard(): ReplyKeyboardMarkup {
+        val keyboard = listOf(
+            KeyboardRow().apply {
+                add(KeyboardButton("🔑 Аутентификация"))
+                add(KeyboardButton("🗑 Удалить"))
+            },
+            KeyboardRow().apply {
+                add(KeyboardButton("◀️ Назад"))
+            }
+        )
+
+        return ReplyKeyboardMarkup().apply {
+            this.keyboard = keyboard
+            this.resizeKeyboard = true
+            this.oneTimeKeyboard = false
+        }
+    }
+
+    /**
+     * Клавиатура для подтверждения удаления аккаунта
+     */
+    fun createDeleteAccountConfirmKeyboard(): ReplyKeyboardMarkup {
+        val keyboard = listOf(
+            KeyboardRow().apply {
+                add(KeyboardButton("Да, удалить"))
+            },
+            KeyboardRow().apply {
+                add(KeyboardButton("❌ Отмена"))
             }
         )
 

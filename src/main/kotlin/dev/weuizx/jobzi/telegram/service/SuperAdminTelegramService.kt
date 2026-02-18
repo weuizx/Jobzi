@@ -3,8 +3,10 @@ package dev.weuizx.jobzi.telegram.service
 import dev.weuizx.jobzi.service.business.ActivationResult
 import dev.weuizx.jobzi.service.business.SuperAdminService
 import dev.weuizx.jobzi.telegram.dto.IncomingMessage
+import dev.weuizx.jobzi.telegram.pool.TelegramClientPoolManager
 import dev.weuizx.jobzi.telegram.state.ConversationState
 import dev.weuizx.jobzi.telegram.state.ConversationStateManager
+import dev.weuizx.jobzi.service.db.TelegramAccountPoolDbService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.format.DateTimeFormatter
@@ -15,7 +17,9 @@ import java.time.format.DateTimeFormatter
 @Service
 class SuperAdminTelegramService(
     private val superAdminService: SuperAdminService,
-    private val stateManager: ConversationStateManager
+    private val stateManager: ConversationStateManager,
+    private val poolManager: TelegramClientPoolManager,
+    private val poolDbService: TelegramAccountPoolDbService
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -60,6 +64,10 @@ class SuperAdminTelegramService(
             "🚫 Заблокировать бизнес" -> handleBlockStart(message)
             "✅ Разблокировать бизнес" -> handleUnblockStart(message)
             "◀️ Назад в меню" -> handleBackToMenu(message)
+            // Telegram Pool команды
+            "📱 Telegram аккаунты" -> handleTelegramPoolMenu()
+            "📋 Список аккаунтов" -> handleListAccounts()
+            "📊 Статус пула" -> handlePoolStatus()
             else -> "❓ Неизвестная команда. Используйте кнопки меню для навигации."
         }
     }
@@ -468,5 +476,93 @@ class SuperAdminTelegramService(
 
             Выберите действие с помощью кнопок ниже.
         """.trimIndent()
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // Управление Telegram пулом
+    // ═══════════════════════════════════════════════════════════════
+
+    private fun handleTelegramPoolMenu(): String {
+        return """
+            📱 Управление Telegram аккаунтами
+
+            Управление пулом аккаунтов для отправки сообщений.
+
+            Используйте кнопки ниже для управления:
+        """.trimIndent()
+    }
+
+    private fun handleListAccounts(): String {
+        try {
+            val accounts = poolDbService.findAllAccounts()
+
+            if (accounts.isEmpty()) {
+                return """
+                    📋 Список аккаунтов пуст
+
+                    Нажмите "➕ Добавить аккаунт" для добавления нового.
+                """.trimIndent()
+            }
+
+            val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+            return buildString {
+                appendLine("📋 Telegram аккаунты (${accounts.size}):")
+                appendLine()
+
+                accounts.forEachIndexed { index, account ->
+                    val statusEmoji = when (account.status) {
+                        dev.weuizx.jobzi.domain.TelegramAccountStatus.AUTHENTICATED -> "🟢"
+                        dev.weuizx.jobzi.domain.TelegramAccountStatus.AUTHENTICATING -> "🟡"
+                        dev.weuizx.jobzi.domain.TelegramAccountStatus.INACTIVE -> "⚪"
+                        dev.weuizx.jobzi.domain.TelegramAccountStatus.ERROR -> "🔴"
+                    }
+
+                    val phoneNumber = try {
+                        poolDbService.decryptPhoneNumber(account)
+                    } catch (e: Exception) {
+                        "***"
+                    }
+
+                    appendLine("${index + 1}. $statusEmoji ${account.status}")
+                    appendLine("   📱 Телефон: $phoneNumber")
+                    appendLine("   🔑 Session: ${account.sessionName}")
+                    appendLine("   📅 Создан: ${account.createdAt.format(formatter)}")
+
+                    if (account.lastUsedAt != null) {
+                        appendLine("   ⏰ Использован: ${account.lastUsedAt!!.format(formatter)}")
+                    }
+
+                    if (account.status == dev.weuizx.jobzi.domain.TelegramAccountStatus.ERROR && account.errorMessage != null) {
+                        appendLine("   ⚠️ Ошибка: ${account.errorMessage}")
+                    }
+
+                    appendLine()
+                }
+            }
+        } catch (e: Exception) {
+            log.error("Failed to list accounts", e)
+            return "❌ Ошибка при получении списка аккаунтов: ${e.message}"
+        }
+    }
+
+    private fun handlePoolStatus(): String {
+        try {
+            val status = poolManager.getPoolStatus()
+
+            return """
+                📊 Статус пула Telegram аккаунтов
+
+                Всего клиентов: ${status["totalClients"]}
+                🟢 Аутентифицированных: ${status["authenticatedClients"]}
+                🟡 В процессе аутентификации: ${status["authenticatingClients"]}
+
+                ────────────────────
+
+                ℹ️ Только аутентифицированные аккаунты могут отправлять сообщения.
+            """.trimIndent()
+        } catch (e: Exception) {
+            log.error("Failed to get pool status", e)
+            return "❌ Ошибка при получении статуса пула: ${e.message}"
+        }
     }
 }

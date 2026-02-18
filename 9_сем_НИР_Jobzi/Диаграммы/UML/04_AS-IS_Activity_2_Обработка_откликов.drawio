@@ -1,0 +1,326 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36" version="29.4.0">
+  <diagram name="AS-IS-Step4" id="as-is-step-4">
+    <mxGraphModel dx="1502" dy="1022" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="lane-process" parent="1" style="swimlane;whiteSpace=wrap" value="Шаг процесса" vertex="1">
+          <mxGeometry height="1350" width="410" x="280" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="start" parent="lane-process" style="ellipse;fillColor=strokeColor;html=1;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="190" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="step4-1" parent="lane-process" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=40;dashed=0;whiteSpace=wrap;" value="4.1 Прочитать сообщение кандидата" vertex="1">
+          <mxGeometry height="50" width="220" x="95" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-start-1" edge="1" parent="lane-process" source="start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="step4-1" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="dec1" parent="lane-process" style="rhombus;" value="" vertex="1">
+          <mxGeometry height="40" width="40" x="185" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="dec1-label" parent="lane-process" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Указано имя?" vertex="1">
+          <mxGeometry height="25" width="100" x="230" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow1-dec1" edge="1" parent="lane-process" source="step4-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="dec1" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="step4-2" parent="lane-process" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=40;dashed=0;whiteSpace=wrap;" value="4.2 Спросить имя" vertex="1">
+          <mxGeometry height="50" width="150" x="30" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-dec1-yes" edge="1" parent="lane-process" source="dec1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="step4-2" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-nет1" parent="lane-process" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Нет" vertex="1">
+          <mxGeometry height="20" width="40" x="120" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="step4-3" parent="lane-process" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=40;dashed=0;whiteSpace=wrap;" value="4.3 Получить ответ с именем" vertex="1">
+          <mxGeometry height="50" width="150" x="30" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow2-3" edge="1" parent="lane-process" source="step4-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="step4-3" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="merge1" parent="lane-process" style="rhombus;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="190" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow3-merge" edge="1" parent="lane-process" source="step4-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="merge1" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="110" y="465" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-dec1-да" edge="1" parent="lane-process" source="dec1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="merge1" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="280" y="220" />
+              <mxPoint x="280" y="465" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-да1" parent="lane-process" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Да" vertex="1">
+          <mxGeometry height="20" width="40" x="240" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="dec2" parent="lane-process" style="rhombus;" value="" vertex="1">
+          <mxGeometry height="40" width="40" x="185" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="dec2-label" parent="lane-process" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Указан телефон?" vertex="1">
+          <mxGeometry height="25" width="120" x="230" y="505" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-merge1-dec2" edge="1" parent="lane-process" source="merge1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="dec2" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="step4-4" parent="lane-process" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=40;dashed=0;whiteSpace=wrap;" value="4.4 Спросить телефон" vertex="1">
+          <mxGeometry height="50" width="150" x="30" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-dec2-нет" edge="1" parent="lane-process" source="dec2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="step4-4" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-нет2" parent="lane-process" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Нет" vertex="1">
+          <mxGeometry height="20" width="40" x="120" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="step4-5" parent="lane-process" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=40;dashed=0;whiteSpace=wrap;" value="4.5 Получить ответ с телефоном" vertex="1">
+          <mxGeometry height="50" width="150" x="30" y="680" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow4-5" edge="1" parent="lane-process" source="step4-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="step4-5" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="merge2" parent="lane-process" style="rhombus;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="190" y="770" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow5-merge2" edge="1" parent="lane-process" source="step4-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="merge2" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="105" y="785" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-dec2-да" edge="1" parent="lane-process" source="dec2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="merge2" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="280" y="540" />
+              <mxPoint x="280" y="785" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-да2" parent="lane-process" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Да" vertex="1">
+          <mxGeometry height="20" width="40" x="240" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="dec3" parent="lane-process" style="rhombus;" value="" vertex="1">
+          <mxGeometry height="40" width="40" x="185" y="840" as="geometry" />
+        </mxCell>
+        <mxCell id="dec3-label" parent="lane-process" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Указан возраст?" vertex="1">
+          <mxGeometry height="25" width="120" x="230" y="825" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-merge2-dec3" edge="1" parent="lane-process" source="merge2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="dec3" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="step4-6" parent="lane-process" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=40;dashed=0;whiteSpace=wrap;" value="4.6 Спросить возраст" vertex="1">
+          <mxGeometry height="50" width="150" x="30" y="910" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-dec3-нет" edge="1" parent="lane-process" source="dec3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="step4-6" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label-нет3" parent="lane-process" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Нет" vertex="1">
+          <mxGeometry height="20" width="40" x="120" y="850" as="geometry" />
+        </mxCell>
+        <mxCell id="step4-7" parent="lane-process" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=40;dashed=0;whiteSpace=wrap;" value="4.7 Получить ответ с возрастом" vertex="1">
+          <mxGeometry height="50" width="150" x="30" y="1000" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow6-7" edge="1" parent="lane-process" source="step4-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="step4-7" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="merge3" parent="lane-process" style="rhombus;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="190" y="1090" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow7-merge3" edge="1" parent="lane-process" source="step4-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="merge3" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="105" y="1105" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-dec3-да" edge="1" parent="lane-process" source="dec3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="merge3" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="280" y="860" />
+              <mxPoint x="280" y="1105" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label-да3" parent="lane-process" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Да" vertex="1">
+          <mxGeometry height="20" width="40" x="240" y="850" as="geometry" />
+        </mxCell>
+        <mxCell id="step4-8" parent="lane-process" style="html=1;align=center;verticalAlign=top;rounded=1;absoluteArcSize=1;arcSize=40;dashed=0;whiteSpace=wrap;" value="4.8 Записать данные в заметки" vertex="1">
+          <mxGeometry height="50" width="200" x="105" y="1160" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-merge3-8" edge="1" parent="lane-process" source="merge3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="step4-8" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="end" parent="lane-process" style="ellipse;html=1;shape=endState;fillColor=strokeColor;" value="" vertex="1">
+          <mxGeometry height="30" width="30" x="190" y="1260" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow8-end" edge="1" parent="lane-process" source="step4-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="end" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lane-role" parent="1" style="swimlane;whiteSpace=wrap" value="Роль" vertex="1">
+          <mxGeometry height="1350" width="170" x="690" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="actor1" parent="lane-role" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" value="Работодатель" vertex="1">
+          <mxGeometry height="60" width="30" x="70" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="actor2" parent="lane-role" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" value="Соискатель" vertex="1">
+          <mxGeometry height="60" width="30" x="70" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="lane-objects" parent="1" style="swimlane;whiteSpace=wrap" value="Входные/Выходные объекты" vertex="1">
+          <mxGeometry height="1350" width="230" x="50" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="input1" parent="lane-objects" style="html=1;whiteSpace=wrap;" value="Отклик кандидата в свободной форме" vertex="1">
+          <mxGeometry height="60" width="150" x="40" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="output1" parent="lane-objects" style="html=1;whiteSpace=wrap;" value="Анализ сообщения (список имеющихся данных)" vertex="1">
+          <mxGeometry height="60" width="150" x="40" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="output2" parent="lane-objects" style="html=1;whiteSpace=wrap;" value="Запрос имени" vertex="1">
+          <mxGeometry height="50" width="150" x="40" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="output3" parent="lane-objects" style="html=1;whiteSpace=wrap;" value="Имя кандидата" vertex="1">
+          <mxGeometry height="50" width="150" x="40" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="output4" parent="lane-objects" style="html=1;whiteSpace=wrap;" value="Запрос телефона" vertex="1">
+          <mxGeometry height="50" width="150" x="40" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="output5" parent="lane-objects" style="html=1;whiteSpace=wrap;" value="Телефон кандидата" vertex="1">
+          <mxGeometry height="50" width="150" x="40" y="680" as="geometry" />
+        </mxCell>
+        <mxCell id="output6" parent="lane-objects" style="html=1;whiteSpace=wrap;" value="Запрос возраста" vertex="1">
+          <mxGeometry height="50" width="150" x="40" y="910" as="geometry" />
+        </mxCell>
+        <mxCell id="output7" parent="lane-objects" style="html=1;whiteSpace=wrap;" value="Возраст кандидата" vertex="1">
+          <mxGeometry height="50" width="150" x="40" y="1000" as="geometry" />
+        </mxCell>
+        <mxCell id="output8" parent="lane-objects" style="html=1;whiteSpace=wrap;" value="Полные данные кандидата&#xa;&#xa;(Время: 5-15 мин)" vertex="1">
+          <mxGeometry height="70" width="150" x="40" y="1160" as="geometry" />
+        </mxCell>
+        <mxCell id="link-in1" edge="1" parent="1" source="input1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="step4-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="link-out1" edge="1" parent="1" source="step4-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="output1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="link-out2" edge="1" parent="1" source="step4-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="output2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="link-out3" edge="1" parent="1" source="step4-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="output3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="link-out4" edge="1" parent="1" source="step4-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="output4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="link-out5" edge="1" parent="1" source="step4-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="output5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="link-out6" edge="1" parent="1" source="step4-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="output6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="link-out7" edge="1" parent="1" source="step4-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="output7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="link-out8" edge="1" parent="1" source="step4-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="output8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="link-role1" edge="1" parent="1" source="actor1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="step4-1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="740" y="380" />
+              <mxPoint x="740" y="185" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="link-role2" edge="1" parent="1" source="actor1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="step4-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="link-role4" edge="1" parent="1" source="actor1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="step4-4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="740" y="380" />
+              <mxPoint x="740" y="665" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="link-role6" edge="1" parent="1" source="actor1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="step4-6">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="740" y="380" />
+              <mxPoint x="740" y="985" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="link-role8" edge="1" parent="1" source="actor1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="step4-8">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="740" y="380" />
+              <mxPoint x="740" y="1235" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="link-role3" edge="1" parent="1" source="actor2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="step4-3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="740" y="780" />
+              <mxPoint x="740" y="435" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="link-role5" edge="1" parent="1" source="actor2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="step4-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="link-role7" edge="1" parent="1" source="actor2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="step4-7">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="740" y="780" />
+              <mxPoint x="740" y="1075" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_9IQgu9M6kfA50imXnA1-1" edge="1" parent="1" source="output2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" target="step4-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_9IQgu9M6kfA50imXnA1-2" edge="1" parent="1" source="output4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" target="step4-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_9IQgu9M6kfA50imXnA1-3" edge="1" parent="1" source="output6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" target="step4-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_9IQgu9M6kfA50imXnA1-4" edge="1" parent="1" source="output3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" target="step4-8">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="70" y="435" />
+              <mxPoint x="70" y="1180" />
+              <mxPoint x="435" y="1180" />
+            </Array>
+            <mxPoint x="420" y="1200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_9IQgu9M6kfA50imXnA1-6" edge="1" parent="1" source="output5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" target="step4-8">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="70" y="755" />
+              <mxPoint x="70" y="1180" />
+              <mxPoint x="435" y="1180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_9IQgu9M6kfA50imXnA1-105" edge="1" parent="1" source="output7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" target="step4-8">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="70" y="1075" />
+              <mxPoint x="70" y="1180" />
+              <mxPoint x="435" y="1180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

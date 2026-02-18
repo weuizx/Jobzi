@@ -20,5 +20,6 @@
     <include file="db/changelog/changes/012-create-broadcast-channels-table.xml"/>
     <include file="db/changelog/changes/013-create-broadcast-campaigns-table.xml"/>
     <include file="db/changelog/changes/014-add-broadcast-schedule-fields.xml"/>
+    <include file="db/changelog/changes/015-create-telegram-accounts-tables.xml"/>
 
 </databaseChangeLog>

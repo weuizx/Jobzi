@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="JobziApplication (local profile)" type="JetRunConfigurationType">
+    <option name="MAIN_CLASS_NAME" value="dev.weuizx.jobzi.JobziApplicationKt" />
+    <module name="jobzi.main" />
+    <option name="PROGRAM_PARAMETERS" value="" />
+    <option name="VM_PARAMETERS" value="-Dspring.profiles.active=local" />
+    <shortenClasspath name="NONE" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

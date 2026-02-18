@@ -1,0 +1,27 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="JobziApplicationKt" type="JetRunConfigurationType" nameIsGenerated="true">
+    <envs>
+      <env name="TELEGRAM_BOT_TOKEN" value="8471713740:AAHfexvi_IQMwwPRsR2sSAhEd1vlqNiYvB4" />
+      <env name="TELEGRAM_API_ID" value="34924556" />
+      <env name="TELEGRAM_API_HASH" value="26a08a6cff432fa469c7deb08d1b7376" />
+      <env name="TELEGRAM_PHONE_NUMBER" value="89220202630" />
+      <env name="TELEGRAM_CLIENT_ENABLED" value="true" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="dev.weuizx.jobzi.JobziApplicationKt" />
+    <module name="jobzi.main" />
+    <shortenClasspath name="NONE" />
+    <extension name="net.ashald.envfile">
+      <option name="IS_ENABLED" value="false" />
+      <option name="IS_SUBST" value="false" />
+      <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+      <option name="IS_IGNORE_MISSING_FILES" value="false" />
+      <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+      <ENTRIES>
+        <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+      </ENTRIES>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

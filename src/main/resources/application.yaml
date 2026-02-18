@@ -26,3 +26,12 @@ telegram:
   bot:
     token: ${TELEGRAM_BOT_TOKEN}
     username: ${TELEGRAM_BOT_USERNAME:jobzyiBot}
+  client:
+    api-id: ${TELEGRAM_API_ID:0}
+    api-hash: ${TELEGRAM_API_HASH:}
+    phone-number: ${TELEGRAM_PHONE_NUMBER:}
+    session-path: ${TELEGRAM_SESSION_PATH:./telegram-session}
+    enabled: ${TELEGRAM_CLIENT_ENABLED:false}
+  account-pool:
+    encryption-key: ${TELEGRAM_POOL_ENCRYPTION_KEY:change-me-32-chars-minimum!!}
+    session-base-path: ${TELEGRAM_POOL_SESSION_PATH:./telegram-pool-sessions}

@@ -38,3 +38,9 @@ out/
 
 ### Kotlin ###
 .kotlin
+
+### Telegram Client ###
+telegram-session/
+.env
+application-local.yml
+src/main/resources/application-local.yml
